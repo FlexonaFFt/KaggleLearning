@@ -1,2 +1,6 @@
 .venv
 .idea
+
+datasets/
+dataset/
+**/dataset/
