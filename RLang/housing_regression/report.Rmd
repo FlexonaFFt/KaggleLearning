@@ -1,0 +1,60 @@
+---
+title: "Housing Regression Report"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+set.seed(42)
+```
+
+## Data
+
+```{r}
+script_dir <- getwd()
+data_path <- file.path(script_dir, "..", "..", "DeepLearning", "dataset", "housing.csv")
+
+housing <- read.csv(data_path)
+if (colnames(housing)[1] == "" || colnames(housing)[1] == "X") {
+  housing <- housing[, -1]
+}
+
+str(housing)
+summary(housing)
+```
+
+## Train/Test Split
+
+```{r}
+idx <- sample(seq_len(nrow(housing)))
+train_size <- floor(0.8 * nrow(housing))
+train_idx <- idx[1:train_size]
+test_idx <- idx[(train_size + 1):nrow(housing)]
+
+train <- housing[train_idx, ]
+test <- housing[test_idx, ]
+```
+
+## Model
+
+```{r}
+model <- lm(MedHouseVal ~ ., data = train)
+summary(model)
+```
+
+## Evaluation
+
+```{r}
+pred <- predict(model, newdata = test)
+actual <- test$MedHouseVal
+
+rmse <- sqrt(mean((pred - actual)^2))
+mae <- mean(abs(pred - actual))
+ss_res <- sum((actual - pred)^2)
+ss_tot <- sum((actual - mean(actual))^2)
+r2 <- 1 - ss_res / ss_tot
+
+metrics <- data.frame(RMSE = rmse, MAE = mae, R2 = r2)
+metrics
+```
