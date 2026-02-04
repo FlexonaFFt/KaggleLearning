@@ -4,3 +4,5 @@
 datasets/
 dataset/
 **/dataset/
+**/StoreSalesData/
+/TimeSeries/StoreSalesData/
